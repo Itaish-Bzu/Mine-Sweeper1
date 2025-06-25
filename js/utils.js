@@ -1,4 +1,5 @@
 'use strict'
+const EMPTY = ' '
 
 function renderBoard(mat, selector) {
   var strHTML = '<table><tbody>'
@@ -8,13 +9,10 @@ function renderBoard(mat, selector) {
       const cell = mat[i][j]
       const className = 'cell cell-' + i + '-' + j
 
-      strHTML += `<td class="${className}" onclick="onCellClicked(this,${i}, ${j})">`
+      strHTML += `<td class="${className} hide" onclick="onCellClicked(this,${i}, ${j})" 
+  oncontextmenu = "onCellMarked(this,${i}, ${j})">`
 
-    //  if (cell.isMine){
-    //     strHTML += `💣`
-    //  }else if (cell.minesAroundCount){
-    //   strHTML += `${cell.minesAroundCount}`
-    //  }
+      strHTML += `${EMPTY}`
       strHTML += `</td>`
     }
     strHTML += '</tr>'
@@ -30,25 +28,6 @@ function renderCell(location, value) {
   // Select the elCell and set the value
   const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
   elCell.innerHTML = value
-}
-
-function findEmptyPos() {
-  //  emptyPos ={i: 2, j: 7}
-  const emptyPositions = []
-  for (var i = 0; i < gBoard.length; i++) {
-    for (var j = 0; j < gBoard[0].length; j++) {
-      const cell = gBoard[i][j]
-      if (cell === EMPTY) {
-        const pos = { i, j }
-        emptyPositions.push(pos)
-      }
-    }
-  }
-
-  if (emptyPositions.length === 0) return null
-  const randIdx = getRandomIntInclusive(0, emptyPositions.length - 1)
-  const emptyPos = emptyPositions[randIdx]
-  return emptyPos
 }
 
 function createMat(ROWS, COLS) {
@@ -96,3 +75,7 @@ function updateTimer() {
   document.querySelector('.timer span').innerText = diff.toFixed(3)
 }
 //**************************************************** */
+
+function getRandomIntInclusive(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min
+}
