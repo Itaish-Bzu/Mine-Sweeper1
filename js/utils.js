@@ -1,5 +1,5 @@
 'use strict'
-const EMPTY = ' '
+
 
 function renderBoard(mat, selector) {
   var strHTML = '<table><tbody>'
@@ -9,8 +9,8 @@ function renderBoard(mat, selector) {
       const cell = mat[i][j]
       const className = 'cell cell-' + i + '-' + j
 
-      strHTML += `<td class="${className} hide" onclick="onCellClicked(this,${i}, ${j})" 
-  oncontextmenu = "onCellMarked(this,${i}, ${j})">`
+    strHTML += `<td class="${className} hide" onclick="onCellClicked(this,${i}, ${j})" 
+    oncontextmenu = "onCellMarked(this,${i}, ${j})">`
 
       strHTML += `${EMPTY}`
       strHTML += `</td>`
@@ -23,11 +23,12 @@ function renderBoard(mat, selector) {
   elContainer.innerHTML = strHTML
 }
 
-// location such as: {i: 2, j: 7}
-function renderCell(location, value) {
+
+function renderCell( i,j, value) {
   // Select the elCell and set the value
-  const elCell = document.querySelector(`.cell-${location.i}-${location.j}`)
+  const elCell = document.querySelector(`.cell-${i}-${j}`)
   elCell.innerHTML = value
+  elCell.classList.remove('hide')
 }
 
 function createMat(ROWS, COLS) {
@@ -42,28 +43,29 @@ function createMat(ROWS, COLS) {
   return mat
 }
 
-function showNeighbors() {
-  const rowIdx = gGamerPos.i
-  const colIdx = gGamerPos.j
+function findTheNeighbors(board, idxI, idxJ) {
+  const cell = board[idxI][idxJ]
 
-  var ballCounter = 0
+  const rowIdx = idxI
+  const colIdx = idxJ
+
   for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
-    if (i < 0 || i >= gBoard.length) continue
+    if (i < 0 || i >= board.length) continue
 
     for (var j = colIdx - 1; j <= colIdx + 1; j++) {
-      if (j < 0 || j >= gBoard[i].length) continue
-      if (i === rowIdx && j === gGamerPos.j) continue
-      var cell = gBoard[i][j]
+      if (j < 0 || j >= board[i].length) continue
+      if (i === rowIdx && j === colIdx) continue
 
-      if (cell.gameElement === BALL) ballCounter++
+      var neighbor = board[i][j]
+
+      if (neighbor.isMine) cell.minesAroundCount++
     }
   }
-  document.querySelector('.neighbor').innerText = ballCounter
 }
 //************************************** */
 function startTimer() {
   gStartTime = Date.now()
-  gTimerInterval = setInterval(updateTimer, 25)
+  gTimerInterval = setInterval(updateTimer, 100)
   // console.log(' gTimerInterval:', gTimerInterval)
 }
 
@@ -72,7 +74,7 @@ function updateTimer() {
   //* Taking the difference between current time and start time
   //* and converting to seconds
   const diff = (now - gStartTime) / 1000
-  document.querySelector('.timer span').innerText = diff.toFixed(3)
+  document.querySelector('p .timer').innerText = diff.toFixed(2)
 }
 //**************************************************** */
 

@@ -4,6 +4,7 @@ body{
 
 table {
     margin: 0.5rem auto;
+    border: 1px solid #100d0d;
     
 }
 
@@ -17,5 +18,5 @@ td{
 
 .hide{
     display: 'none';
-    background-color: #100d0d;
+    background-color: #989090;
 }
