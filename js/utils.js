@@ -62,21 +62,18 @@ function findTheNeighbors(board, idxI, idxJ) {
     }
   }
 }
-//************************************** */
+
 function startTimer() {
   gStartTime = Date.now()
   gTimerInterval = setInterval(updateTimer, 100)
-  // console.log(' gTimerInterval:', gTimerInterval)
 }
 
-function updateTimer() {
+function updateTimer() { 
   const now = Date.now()
-  //* Taking the difference between current time and start time
-  //* and converting to seconds
-  const diff = (now - gStartTime) / 1000
-  document.querySelector('p .timer').innerText = diff.toFixed(2)
+  gGame.secPassed = (now - gStartTime) / 1000
+  document.querySelector('p .timer').innerText = gGame.secPassed.toFixed(2)
 }
-//**************************************************** */
+
 
 function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min
