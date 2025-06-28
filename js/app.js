@@ -22,11 +22,13 @@ function onInit() {
     secsPassed: 0,
     isVictory: false,
     lives: 3,
+    isHint: false,
   }
 
   gBoard = buildBoard()
   renderBoard(gBoard, '.board')
   renderBtn()
+  renderHints()
   clearInterval(gTimerInterval)
   mineDisplay()
   timerDisplay()
@@ -77,42 +79,56 @@ function onCellClicked(elCell, i, j) {
   if (!gGame.isOn) return
   if (cell.isMarked) return
 
-  gGame.revealedCount++
-  cell.isRevealed = true
   elCell.classList.remove('hide')
 
-  if (gGame.revealedCount === 1) {
+  if (gGame.revealedCount === 0) {
+    revealedCell(cell)
     startTimer()
     randomMind(gBoard, gLevel.mine, cell)
     setMinesNegsCount(gBoard)
     expandeReveal(i, j)
     return
-  } else if (cell.minesAroundCount) {
+  }
+
+  if (cell.minesAroundCount) {
     elCell.innerHTML = cell.minesAroundCount
-  } else {
-    elCell.innerText = EMPTY
-    expandeReveal(i, j)
-  }
+    if (gGame.isHint) expandeReveal(i, j, elCell)
+    else revealedCell(cell)
+  } else if (!cell.minesAroundCount) {
+    if (cell.isMine) {
+      if (gGame.isHint) {
+        expandeReveal(i, j, elCell)
+        elCell.innerHTML = MINE
+        return
+      }
 
-  if (cell.isMine) {
-    gGame.lives--
-    livesDisplay(gGame.lives)
-    if (gGame.lives === 0) {
-      elCell.classList.remove('hide')
-      gameOver('😖')
-      exposeAllMines()
-      return
+      gGame.lives--
+
+      livesDisplay(gGame.lives)
+      if (gGame.lives === 0) {
+        exposeAllMines()
+        gameOver('😖')
+        return
+      }
+      elCell.innerHTML = MINE
+
+      setTimeout(() => {
+        elCell.classList.add('hide')
+        elCell.innerHTML = EMPTY
+      }, 500)
+    } else {
+      elCell.innerText = EMPTY
+      expandeReveal(i, j, elCell)
+      if (!gGame.isHint) revealedCell(cell)
     }
-
-    cell.isRevealed = false
-    elCell.innerHTML = MINE
-    setTimeout(() => {
-      gGame.revealedCount--
-      elCell.classList.add('hide')
-      elCell.innerHTML = EMPTY
-    }, 500)
   }
+
   checkGameOver() ? gameOver('😎') : ' '
+}
+
+function revealedCell(cell) {
+  gGame.revealedCount++
+  cell.isRevealed = true
 }
 
 function onCellMarked(elCell, i, j) {
@@ -161,35 +177,52 @@ function setMinesNegsCount(board) {
   }
 }
 
-function expandeReveal(idxI, idxJ) {
+function expandeReveal(idxI, idxJ, elCell) {
   const cell = gBoard[idxI][idxJ]
-  
-  if (cell.isMarked) return
-  if (cell.isMine) return
-  
   const rowIdx = idxI
   const colIdx = idxJ
-  
+  const unrevealedsNeighbors = []
+
   for (var i = rowIdx - 1; i <= rowIdx + 1; i++) {
     if (i < 0 || i >= gBoard.length) continue
-    
+
     for (var j = colIdx - 1; j <= colIdx + 1; j++) {
       if (j < 0 || j >= gBoard[0].length) continue
       if (i === rowIdx && j === colIdx) continue
-      
+
       var neighbor = gBoard[i][j]
-      
-      if (!neighbor.isMine && !neighbor.isRevealed && !neighbor.isMarked) {
-        if (!neighbor.minesAroundCount) {
-          renderCell(i, j, EMPTY)
-        } else {
-          renderCell(i, j, neighbor.minesAroundCount)
+
+      if (gGame.isHint) {
+        if (!neighbor.isRevealed) {
+          unrevealedsNeighbors.push(neighbor)
+          hintMode(neighbor, i, j, elCell)
         }
-        neighbor.isRevealed = true
-        gGame.revealedCount++
-        checkGameOver() ? gameOver('😎') : ' '
-      }
+      } else revel(neighbor, i, j, cell)
     }
+  }
+  if (!unrevealedsNeighbors.length && gGame.isHint) {
+    setTimeout(() => {
+      elCell.innerHTML = EMPTY
+      elCell.classList.add('hide')
+      gGame.isHint = false
+
+      gBtnId.style.display = 'none'
+    }, 1500)
+  }
+}
+
+function revel(neighbor, i, j, cell) {
+  if (cell.isMine) return
+
+  if (!neighbor.isMine && !neighbor.isRevealed && !neighbor.isMarked) {
+    if (!neighbor.minesAroundCount) {
+      renderCell(i, j, EMPTY)
+    } else {
+      renderCell(i, j, neighbor.minesAroundCount)
+    }
+    neighbor.isRevealed = true
+    gGame.revealedCount++
+    checkGameOver() ? gameOver('😎') : ' '
   }
 }
 
@@ -221,7 +254,6 @@ function gameOver(msg) {
   // openModal(msg)
 }
 
-
 function mineDisplay() {
   const elmine = document.querySelector('p .mine')
   elmine.innerHTML = gLevel.mine - gGame.markedCount
@@ -233,7 +265,7 @@ function timerDisplay() {
 }
 
 function renderBtn() {
-  var levels = [4, 8, 12]
+  var levels = ['4 x 4', '8 x 8', '12 x 12']
   var btns = ` `
 
   for (var i = 0; i < levels.length; i++) {

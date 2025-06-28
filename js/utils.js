@@ -31,17 +31,15 @@ function renderCell( i,j, value) {
   elCell.classList.remove('hide')
 }
 
-function createMat(ROWS, COLS) {
-  const mat = []
-  for (var i = 0; i < ROWS; i++) {
-    const row = []
-    for (var j = 0; j < COLS; j++) {
-      row.push('')
-    }
-    mat.push(row)
-  }
-  return mat
+function renderCellHint(i, j, value) {
+  // Select the elCell and set the value
+  const elCell = document.querySelector(`.cell-${i}-${j}`)
+  elCell.innerHTML = value
+   elCell.classList.add('hide')
+  // console.log( elCell );
+
 }
+
 
 function findTheNeighbors(board, idxI, idxJ) {
   const cell = board[idxI][idxJ]

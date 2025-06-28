@@ -16,10 +16,9 @@ h1{
 p{
     font-size: 1.25rem;
     font-weight: bold;
-    margin: 0.25rem;
+    margin: 0.10rem;
 }
  
-
 
 table {
     margin: 0.5rem auto;
@@ -39,7 +38,7 @@ td{
 }
 
 td:hover{
-    background-color: #e5cdc1;
+    background-color: #ffffff;
     cursor:pointer;
 }
 
@@ -52,7 +51,7 @@ button{
    background-color:#634334;
     color:rgb(255, 255, 255);
     margin:  5px;
-    padding: 10px 20px;
+    padding: 5px 20px;
     border-radius: 5px;
     border: 2px solid#b1978a;
     font-weight: bold;
@@ -64,9 +63,15 @@ button{
     background-color: #e1c39f;
     border: none;
     margin: 0.25rem;
-    /* border: 2px solid#b1978a; */
 }
 
 button:hover{
     cursor:pointer;  
+}
+
+
+footer{
+margin-top: 0.5rem;
+    color: #ffffff;
+  
 }
