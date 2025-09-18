@@ -69,7 +69,7 @@ function startTimer() {
 function updateTimer() { 
   const now = Date.now()
   gGame.secPassed = (now - gStartTime) / 1000
-  document.querySelector('p .timer').innerText = gGame.secPassed.toFixed(2)
+  document.querySelector('p .timer').innerText = gGame.secPassed.toFixed(0)
 }
 
 

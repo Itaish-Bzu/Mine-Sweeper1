@@ -38,6 +38,7 @@ function hintMode(neighbor, i, j, elCell) {
 
 function onSafeClick() {
   if (!gcount) return
+  if (!gGame.isOn)return
   var safeCells = []
 
   for (var i = 0; i < gBoard.length; i++) {
