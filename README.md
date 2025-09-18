@@ -1,7 +1,9 @@
 # 💣 Mine-Sweeper
+![Meme Generator Screenshot](css/demo.png)
 
 Classic **Minesweeper** game built using **Vanilla JavaScript**, **HTML5**, and **CSS3**.  
 This project was created as part of my learning process to practice **DOM manipulation**, **event handling**, and **game logic** without using any frameworks.
+
 
 ---
 
@@ -26,5 +28,5 @@ This project was created as part of my learning process to practice **DOM manipu
 ---
 
 ## 🚀 Demo
-👉 [Live Demo Here]([https://your-demo-link.com](https://itaish-bzu.github.io/Mine-Sweeper1/))  
+👉[Live Demo Here](https://itaish-bzu.github.io/Mine-Sweeper1/) 
 
